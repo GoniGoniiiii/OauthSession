@@ -1,0 +1,40 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+main Page
+
+<!--
+    동작 원리
+
+    클라이언트가 네이버 소셜로그인을 한다고 가정
+    로그인 시도 : /oauth2/authorization/서비스명  서버측으로 요청을 보냄
+    우리 서버의 OAtuh2AuthorizationRequestRedirectFilter에서 첫번째로 잡힘
+    그 요청이 내부의 요청을 거쳐서 등록된 외부소셜로그인 인증서버에 도착
+    외부 소셜로그인 지원 서비스가 로그인 페이지를 응답해줌
+    사용자는 페이지에 응답
+    로그인이 성공적으로 응답되면 인증서버에 등록된 우리 서버의 주소로 리다이렉션됨
+    성공했다는 말과함께 리다이렉션이 되기때문에 서비스의 코드를 날려줌
+    코드를 날려주는 경로는 loginoauth2/code/서비스명
+    우리 쪽에서는     Oauth2LoginAuthenticationFilter 에서 요청을 받게됨
+    잡아서 필터는 뒷 단인 OAuth2LoginAuthenticationProvider로 코드와 특정 정보를 넘겨줌
+    그 코드를 가지고 인증서버에 access토큰을 발급받기위해 정보를 보냄
+    access토큰을 가지고 오면 코드 소멸
+    OAuth2LoginAuthenticationProvider에서 access토큰을 가지고 사용자 정보를 획득하기 위해 외부서비의 리소스 서버에 토큰을 보내줌
+    리소스 서버는 토큰을 검증한 뒤에 유저정보를 더해서 우리쪽으로 다시 돌려줌
+    그럼 우리는 유저 정보를 가지고 OAuth2UserDetailsSerivice에서  정보를 처리하고
+    OAuth2UserDeatils를 반환
+
+
+
+
+
+
+-->
+</body>
+</html>
