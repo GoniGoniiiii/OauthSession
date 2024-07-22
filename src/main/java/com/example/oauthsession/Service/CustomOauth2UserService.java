@@ -1,8 +1,11 @@
 package com.example.oauthsession.Service;
 
+import com.example.oauthsession.dto.CustomOAuth2User;
 import com.example.oauthsession.dto.GoogleResponse;
 import com.example.oauthsession.dto.NaverResponse;
 import com.example.oauthsession.dto.OAuth2Response;
+import com.example.oauthsession.entity.UserEntity;
+import com.example.oauthsession.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -11,6 +14,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomOauth2UserService extends DefaultOAuth2UserService {
+
+    private final UserRepository userRepository;
+
+    public CustomOauth2UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -32,6 +41,26 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         } else {
             return null;
         }
+        
+        //받아온 정보를 db에 저장,업데이트해주면 됨
+        String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
 
+        UserEntity exist=userRepository.findByUsername(username);
+
+        String role=null;
+        if(exist == null) {
+            UserEntity user=new UserEntity();
+            user.setUsername(username);
+            user.setEmail(oAuth2Response.getEmail());
+            user.setRole("ROLE_USER");
+
+            userRepository.save(user);
+        }else{
+                role = exist.getRole();
+                exist.setEmail(oAuth2Response.getEmail());
+                userRepository.save(exist);
+        }
+
+        return new CustomOAuth2User(oAuth2Response,role);
     }
 }

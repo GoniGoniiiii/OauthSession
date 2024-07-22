@@ -43,3 +43,7 @@ out
 gen
 .gradle
 build
+/src/main/resources/application.properties
+/src/main/java/com/example/oauthsession/oauth2/SocialClientRegistration.java
+
+

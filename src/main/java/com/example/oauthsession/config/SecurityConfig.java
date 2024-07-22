@@ -1,6 +1,7 @@
 package com.example.oauthsession.config;
 
 import com.example.oauthsession.Service.CustomOauth2UserService;
+import com.example.oauthsession.oauth2.CustomClientRegistrationRepo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -12,9 +13,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOauth2UserService customOauth2UserService;
+    private final CustomClientRegistrationRepo customClientRegistrationRepo;
 
-    public SecurityConfig(CustomOauth2UserService customOauth2UserService) {
+    public SecurityConfig(CustomOauth2UserService customOauth2UserService, CustomClientRegistrationRepo customClientRegistrationRepo) {
         this.customOauth2UserService = customOauth2UserService;
+        this.customClientRegistrationRepo = customClientRegistrationRepo;
     }
 
     @Bean
@@ -33,6 +36,8 @@ public class SecurityConfig {
         //
         http
                 .oauth2Login((oauth2)-> oauth2
+                        .loginPage("/login")
+                        .clientRegistrationRepository(customClientRegistrationRepo.clientRegistrationRepository())
                         .userInfoEndpoint((userInfoEndpointConfig) ->
                                 userInfoEndpointConfig.userService(customOauth2UserService)));
 
